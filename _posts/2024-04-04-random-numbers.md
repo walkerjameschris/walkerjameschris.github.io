@@ -1,6 +1,6 @@
 ---
-title: "Visualizing US Trade"
-date: 2025-04-03
+title: "Random Number Generation"
+date: 2024-04-04
 ---
 
 Random number generators are at the core of many applied computer science
