@@ -23,6 +23,8 @@ smooth scrolls (such as a touchscreen device or trackpad).
 
 In all, this is more of an exercise in art than data analysis. Enjoy!
 
+<div id="d3-chart-hz"></div>
+
 <script>
     
 //// DEFINE DATA AND AXES ////
