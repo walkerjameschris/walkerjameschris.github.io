@@ -61,22 +61,13 @@ author:
   links:
     - label: "LinkedIn"
       icon: "fa-brands fa-linkedin"
-      url: "https://linkedin.com/in/chrisjameswalker"
+      url: "https://linkedin.com/in/walkerjameschris"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/walkerjameschris"
     - label: "Resume"
       icon: "fa-solid fa-file"
       url: "/assets/resume.pdf"
-
-footer:
-  links:
-    - label: "LinkedIn"
-      icon: "fa-brands fa-linkedin"
-      url: "https://linkedin.com/in/chrisjameswalker"
-    - label: "GitHub"
-      icon: "fab fa-fw fa-github"
-      url: "https://github.com/walkerjameschris"
 
 defaults:
   # _posts
