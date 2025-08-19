@@ -56,7 +56,7 @@ plugins:
 
 author:
   name   : "Chris Walker"
-  avatar : "/assets/images/bio-photo.jpg"
+  avatar : "/assets/bio-photo.jpg"
   bio    : "Data Scientist at Fannie Mae excited about scientific computing."
   links:
     - label: "LinkedIn"
@@ -65,6 +65,9 @@ author:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/walkerjameschris"
+    - label: "Resume"
+      icon: "fab fa-fw fa-github"
+      url: "/assets/resume.pdf"
 
 footer:
   links:
