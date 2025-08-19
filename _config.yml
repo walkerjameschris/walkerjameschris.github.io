@@ -60,19 +60,19 @@ author:
   bio    : "Data Scientist at Fannie Mae excited about scientific computing."
   links:
     - label: "LinkedIn"
-      icon: "fas fa-fw fa-link"
+      icon: "fa-brands fa-linkedin"
       url: "https://linkedin.com/in/chrisjameswalker"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/walkerjameschris"
     - label: "Resume"
-      icon: "fab fa-fw fa-github"
+      icon: "fa-solid fa-file"
       url: "/assets/resume.pdf"
 
 footer:
   links:
     - label: "LinkedIn"
-      icon: "fas fa-fw fa-link"
+      icon: "fa-brands fa-linkedin"
       url: "https://linkedin.com/in/chrisjameswalker"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
