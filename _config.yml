@@ -57,7 +57,7 @@ plugins:
 author:
   name   : "Chris Walker"
   avatar : "/assets/images/bio-photo.jpg"
-  bio    : "Data Scientist at Fannie Mae excited about scientific computing"
+  bio    : "Data Scientist at Fannie Mae excited about scientific computing."
   links:
     - label: "LinkedIn"
       icon: "fas fa-fw fa-link"
