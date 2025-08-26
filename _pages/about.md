@@ -7,7 +7,7 @@ Hey, I'm Chris Walker! I'm a seasoned Senior Data Scientist with a passion
 for using data to solve complex problems. My journey in analytics began at
 Texas A&M University, where I earned a BS in Urban and Regional Planning
 with a minor in Economics. I was an undergraduate research scholar where
-I forecasts home values after Hurricane Florence. I later pursued a Master
+I forecasted home values after Hurricane Florence. I later pursued a Master
 of Science in Analytics from the Georgia Institute of Technology, where
 I delved into modeling, simulation, and machine learning methods.
 
