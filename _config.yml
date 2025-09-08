@@ -65,9 +65,6 @@ author:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/walkerjameschris"
-    - label: "Resume"
-      icon: "fa-solid fa-file"
-      url: "/assets/resume.pdf"
 
 defaults:
   # _posts
