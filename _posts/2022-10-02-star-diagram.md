@@ -5,13 +5,13 @@ date: "2022-10-02"
 
 A Hertzsprung–Russell diagram (HR diagram) is a visualization of star
 data which shows the relationship between magnitude and spectral
-characteristics. The diagram was created by Ejnar Hertzsprung an
+characteristics. The diagram was created by Ejnar Hertzsprung and
 Henry Norris Russell independently in the early 20th century. You 
 can read more about these diagrams here.
 
 While interesting, I am no astronomer and am primarily inspired by
 how interesting the diagrams appear. I originally saw this diagram
-on a post my Mike Bostock (creator of D3.js) when learning more about
+on a post by Mike Bostock (creator of D3.js) when learning more about
 creating data visualizations in JavaScript. You can see his 
 implementation here.
 
