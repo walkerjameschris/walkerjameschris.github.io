@@ -95,7 +95,7 @@ then distinct ensures there is only one revealed door for each combination.
 Finally, we determine which is the switch door. Because choice and reveal
 are never the same, there is no need to ensure distinct records here. The
 resulting data is summarized to determine the number of times the contestant
-would be correct if they stayed versus swapped to a the other door.
+would be correct if they stayed versus swapped to the other door.
 
 Over the 1 million simulations I performed, staying at the same door was
 correct 334,160 times whereas switching was correct 665,840 times. This is
