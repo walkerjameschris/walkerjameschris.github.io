@@ -123,7 +123,7 @@ personas defined here:
 agents = {
     "Conservative": Agent("Holds low risk stocks over long periods and does not trade often"),
     "Active": Agent("A modest investor who occasionally trades"),
-    "Agressive": Agent("A high risk investor who makes frequent trades")
+    "Aggressive": Agent("A high risk investor who makes frequent trades")
 }
 
 for stock_prices in tqdm.tqdm(market_data):
@@ -137,7 +137,7 @@ The medium-risk agent made a few more trades and the high-risk agent
 traded often!
 
 The conservative agent performed only slightly worse than the moderate
-agent. Meanwhile, the agressive agent made significant gains before
+agent. Meanwhile, the aggressive agent made significant gains before
 losing their portfolio during market volatility.
 
 ![](/assets/agent-comparison.png)
