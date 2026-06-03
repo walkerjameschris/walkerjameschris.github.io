@@ -12,7 +12,7 @@ cash which it can use to buy and sell three different stocks:
 | Risk Level | Stock Ticker | Rationale |
 | Low Risk | `VOO` | A broad market indicator considered safe |
 | Medium Risk | `NVDA` | A high performance, but somewhat risky tech stock |
-| High Risk | `ASTS` | An extremely volatile tech stock |
+| High Risk | `SMCI` | An extremely volatile tech stock |
 
 At each turn (representing one week of trading) I take the closing
 price of each of these stocks and allow the agent to buy, sell, or
@@ -42,7 +42,7 @@ MAX_DATE = "2026-03-31"
 
 market_data = (
     yfinance.download(
-        tickers=["VOO", "NVDA", "ASTS"],
+        tickers=["VOO", "NVDA", "SMCI"],
         start=MIN_DATE,
         end=MAX_DATE,
         progress=False,
@@ -56,7 +56,7 @@ market_data = (
         pl.col("Date").dt.to_string("%Y-%m-%d").alias("date"),
         pl.col("VOO").round(2).alias("LOW_RISK"),
         pl.col("NVDA").round(2).alias("MED_RISK"),
-        pl.col("ASTS").round(2).alias("HIGH_RISK"),
+        pl.col("SMCI").round(2).alias("HIGH_RISK"),
     )
     .iter_rows(
         named=True
@@ -81,12 +81,13 @@ class Agent:
     def advance(self, stock_prices: dict):
         # We only feed the last 3 logs to keep context window overhead minimal
         prompt = f"""
+        Output your next trading decision. Maximize
+        the value of your portfolio. 
+        
         Strategy: {self.persona}
         Balances: Cash ${self.cash:.2f} | Shares {self.shares}
-        Recent Actions: {self.history[-3:]}
         Market Prices: { {k: v for k, v in stock_prices.items() if k != 'date'} }
-        
-        Output your next trading decision.
+        Recent Actions: {self.history[-3:]}
         """
 
         response = ollama.chat(
@@ -97,18 +98,17 @@ class Agent:
 
         order = Decision.model_validate_json(response.message.content)
         price = stock_prices[order.ticker]
-        date = stock_prices["date"]
 
         if order.action == "BUY" and self.cash >= order.quantity * price:
             self.cash -= order.quantity * price
             self.shares[order.ticker] += order.quantity
-            self.history.append(f"{date}: Bought {order.quantity} {order.ticker}")
+            self.history.append(f"{stock_prices}: Bought {order.quantity} {order.ticker}")
         elif order.action == "SELL" and self.shares[order.ticker] >= order.quantity:
             self.shares[order.ticker] -= order.quantity
             self.cash += order.quantity * price
-            self.history.append(f"{date}: Sold {order.quantity} {order.ticker}")
+            self.history.append(f"{stock_prices}: Sold {order.quantity} {order.ticker}")
         else:
-            self.history.append(f"{date}: Held positions")
+            self.history.append(f"{stock_prices}: Held positions")
 
         # Portfolio total value calculation (Cash + Asset Value)
         asset_value = sum(self.shares[i] * stock_prices[i] for i in self.shares)
@@ -136,7 +136,53 @@ agent made few trades generally holding VOO throughout the simulation.
 The medium-risk agent made a few more trades and the high-risk agent
 traded often!
 
+The conservative agent performed only slightly worse than the moderate
+agent. Meanwhile, the agressive agent made significant gains before
+losing their portfolio during market volatility.
+
 ![](/assets/agent-comparison.png)
+
+```py
+results = (
+    pl.DataFrame({
+        k: v.portfolio_value
+        for k, v in agents.items()
+    })
+    .with_row_index("day")
+    .unpivot(
+        index="day"
+    )
+)
+
+plot = (
+    p9.ggplot(
+        data=results,
+        mapping=p9.aes(
+            x="day",
+            y="value",
+            color="variable",
+            group="variable"
+        )
+    ) +
+    p9.geom_line(
+        size=3,
+        color="white"
+    ) +
+    p9.geom_line(
+        size=1
+    ) +
+    p9.theme_minimal() +
+    p9.theme(
+        panel_grid_minor=p9.element_blank()
+    ) +
+    p9.labs(
+        x="Trading Week",
+        y="Portfolio Value",
+        title="Portfolio Value by Investor",
+        color="Investor"
+    )
+)
+```
 
 Future enhancements include:
 - Introducing cash flows (simulating a salary) so agents can distribute new cash
