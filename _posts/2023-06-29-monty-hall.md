@@ -1,9 +1,9 @@
 ---
-title: "Stay or Switch, A Frequentist Approach to Monte Hall"
+title: "Stay or Switch, A Frequentist Approach to Monty Hall"
 date: "2023-06-29"
 ---
 
-The Monte Hall is a famous brain teaser in the form of a probability puzzle.
+The Monty Hall is a famous brain teaser in the form of a probability puzzle.
 For the uninitiated, the problem is as follows: Consider three doors where
 two of the doors have nothing behind them and one of the doors has a prize.
 You are instructed to select the door with the prize.
@@ -43,14 +43,14 @@ door 2 was revealed, then door 3 is the switch door (regardless of the correct a
 | 2 | 2 | 2 | 1 | 3 | 
 
 Now we can use R and the tidyverse to construct a function which will simulate
-Monte Hall’s problem many times. Because vectorized operations in R are fast,
+Monty Hall’s problem many times. Because vectorized operations in R are fast,
 we will stay within that constraint for our function. Additionally, this solution
 leverages the row ID to prevent grouping the data frame into n groups providing 
 further performance benefits!
 
 ```r
 simulate <- function(n = 1e6) {
-  # Simulation of the Monte Hall problem
+  # Simulation of the Monty Hall problem
   
   values <- seq(3)
   reveal <- values
@@ -100,4 +100,4 @@ would be correct if they stayed versus swapped to a the other door.
 Over the 1 million simulations I performed, staying at the same door was
 correct 334,160 times whereas switching was correct 665,840 times. This is
 almost exactly 1-in-3 and 2-in-3 for staying and switching respectively
-sufficiently satisfying the frequentist approach to the Monte Hall problem!
+sufficiently satisfying the frequentist approach to the Monty Hall problem!
