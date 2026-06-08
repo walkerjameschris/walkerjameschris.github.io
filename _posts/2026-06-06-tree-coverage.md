@@ -6,8 +6,19 @@ date: 2026-06-02
 Today I am working on using satellite imagery to determine
 the level of tree canopy coverage in four major east coast
 downtowns. In particular, I am comparing Atlanta, Charlotte,
-Washington DC, and Philedelpha. This sits at the intersection
+Washington DC, and Philadelphia. This sits at the intersection
 of two of my favorite domains; urban planning and data science!
+
+## Methods
+
+I chose a superpixel segmentation approach paired with a Gradient
+Boosting Classifier because pixel-level classifications often suffer
+from extreme "salt-and-pepper" noise in high-resolution satellite
+imagery. By grouping contextually similar pixels into cohesive
+geographic segments, the model evaluates structural shape and
+localized color variances simultaneously. This allows me to label
+a handful of segmente per city, build a model, and estimate tree
+coverage on the remaining segments.
 
 ## Setup
 
@@ -147,11 +158,11 @@ show_segment_boundaries("Atlanta", "slic-bounds-atlanta.png", images, segments)
 
 Next, we set up a pipeline to hand-label a number of segments from each city.
 In particular, we are labeling 50 images from each city for a total of 200
-labelled images. Then we will predict whether the remaining thousands of
+labeled images. Then we will predict whether the remaining thousands of
 segments are trees.
 
 While this dataset is fundamentally a small supervised subset paired with a
-larger unlabelled pool, treating it with a standard classifier over manual
+larger unlabeled pool, treating it with a standard classifier over manual
 annotations operates on a semi-supervised philosophy. This strategy yields
 far better localized results than a completely unsupervised clustering method.
 
@@ -282,7 +293,7 @@ for each downtown core:
 | City | Percent Tree Canopy |
 | Atlanta | 19% |
 | Charlotte | 12% |
-| Philedelpha | 10% | 
+| Philadelphia | 10% | 
 | Washington DC | 16% |
 
 ![](/assets/canopy-plot.png)
@@ -336,7 +347,7 @@ plot.save(
 ## Comparative Context
 
 Our downtown canopy estimates (10% for Philadelphia to 19% for Atlanta)
-align well with external urban studies, which typically place dense commercial
+align well with external urban studies (Maco, n.d.), which typically place dense commercial
 cores between 8% and 15% coverage. However, these numbers are vastly lower than
 city-wide municipal assessments. For example, Atlanta boasts a 46% overall
 canopy rate, highlighting the severe green infrastructure deficit when
@@ -347,3 +358,7 @@ single-family home (SFH) neighborhoods is a major hurdle. These zones often
 feature lawns, ornamental shrubs, and individual trees that trick models into
 overestimating canopy density without providing the actual ecological benefits
 of a dense, unified forest structure.
+
+## References
+
+Maco, S. E. (n.d.). Assessing canopy cover over streets and sidewalks in street tree populations. Journal of Arboriculture, 28(6), 270–276.
