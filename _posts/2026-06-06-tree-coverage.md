@@ -67,7 +67,7 @@ def show_segment_boundaries(city, path, images, segments):
     
     plt.imshow(boundaries)
     plt.axis("off")
-    plt.savefig(path)
+    plt.savefig(path, bbox_inches="tight", pad_inches=0)
     plt.close()
 
 
