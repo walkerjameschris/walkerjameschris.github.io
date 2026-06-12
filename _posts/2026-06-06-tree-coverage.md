@@ -332,7 +332,9 @@ plot = (
         axis_text=p9.element_blank(),
         panel_grid=p9.element_blank(),
         axis_title=p9.element_blank(),
-        text=p9.element_text(size=12, face="bold")
+        text=p9.element_text(size=12, face="bold", family="Liberation Sans"),
+        plot_background=p9.element_rect(color=None, fill=None),
+        panel_background=p9.element_rect(color=None, fill=None)
     )
 )
 
