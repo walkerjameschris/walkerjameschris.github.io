@@ -149,10 +149,10 @@ segments = {
     for city, image in images.items()
 }
 
-show_segment_boundaries("Atlanta", "slic-bounds-atlanta.png", images, segments)
+show_segment_boundaries("Atlanta", "slic-bounds.png", images, segments)
 ```
 
-![](/assets/slic-bounds-atlanta.png)
+![](/assets/slic-bounds.png)
 
 ## Labelled Data
 
@@ -296,7 +296,7 @@ for each downtown core:
 | Philadelphia | 10% | 
 | Washington DC | 16% |
 
-![](/assets/canopy-plot.png)
+![](/assets/tree-canopy-plot.png)
 
 ```py
 plot = (
@@ -339,7 +339,7 @@ plot = (
 )
 
 plot.save(
-    filename="canopy-plot.png", 
+    filename="tree-canopy-plot.png", 
     width=8, 
     height=8, 
     dpi=300
