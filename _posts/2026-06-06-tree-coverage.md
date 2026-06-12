@@ -291,6 +291,7 @@ below the image shown here. Using a simple *percent of pixels*
 for each downtown core:
 
 | City | Percent Tree Canopy |
+| --- | --- |
 | Atlanta | 19% |
 | Charlotte | 12% |
 | Philadelphia | 10% | 
