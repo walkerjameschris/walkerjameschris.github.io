@@ -1,6 +1,6 @@
 ---
 title: "Estimating Downtown Tree Canopy"
-date: 2026-06-02
+date: 2026-06-06
 ---
 
 Today I am working on using satellite imagery to determine
