@@ -106,7 +106,9 @@ Google which I self hosted on my server) I can type `/server-status` in the
 chat window. That would initialize this prompt:
 
 ````
-Use the `server-tools` MCP to generate the following table. Do not add any additional context, commentary, or exposition beyond what is described below. Be sure to format the resulting table as a markdown table so it is readable:
+Use the `server-tools` MCP to generate the following table. Do not add any
+additional context, commentary, or exposition beyond what is described below.
+Be sure to format the resulting table as a markdown table so it is readable:
 
 ```md
 | Component | Reading | Critical |
