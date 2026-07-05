@@ -3,7 +3,7 @@ title: "Visualizing US Biomass"
 date: "2026-06-11"
 ---
 
-I am facinated by trees, forests, and woods. The United States is home to
+I am fascinated by trees, forests, and woods. The United States is home to
 a vast array of forests, deserts, and plains. While the eastern US is dominated
 by deciduous forests, the central plains are comparatively bare. And the western
 US is dominated by stark contrasts; the Central Valley of California is effectively
@@ -11,7 +11,7 @@ bare (flat plains used for farming) but the Sierra Nevada mountains are home to
 massive Sequoia trees where the coast ranges have the Redwoods (the largest
 trees on earth).
 
-The map below shows relative biomass (the megagrams per hectacre) over a grid.
+The map below shows relative biomass (the megagrams per hectare) over a grid.
 Larger values indicate higher "weight" estimates of trees and vegetation
 over the land. Note that the large *biomass* does not always mean *lush*. For
 example, the woods of Maryland *feel* more lush than the woods of the Sierra
