@@ -28,7 +28,7 @@ generate random numbers which follow some distribution (say an exponential).
 It turns out that as long as we can generate random numbers between 0 and 1,
 we can transform them to any reasonable distribution via the inverse transform
 theorem (this is something I might discuss in a future post). However, for now
-lets focus on random numbers between 0 and 1.
+let's focus on random numbers between 0 and 1.
 
 The most common random number generator is called the linear congruential
 generator or LCG. This class of generators has the following form (where U is
