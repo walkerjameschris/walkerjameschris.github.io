@@ -1,7 +1,7 @@
 ---
 title: "Building an MCP Server with `fastmcp` + Open WebUI"
 date: 2026-07-05
-layout: post
+mermaid: true
 ---
 
 This article explains how I set up a tiny MCP (model context protocol)
