@@ -6,9 +6,9 @@
 
 /* Your custom font size overrides */
 .page__content {
-  font-size: 0.875rem; /* Shrunk down slightly for mobile */
+  font-size: 1rem; /* Shrunk down slightly for mobile */
 
   @include breakpoint($medium) {
-    font-size: 1rem; /* Returns to normal on desktop */
+    font-size: 0.8rem; /* Returns to normal on desktop */
   }
 }
