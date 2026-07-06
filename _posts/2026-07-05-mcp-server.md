@@ -122,7 +122,7 @@ Be sure to format the resulting table as a markdown table so it is readable:
 
 The model then returns a clean, live update of the server metrics directly in the chat:
 
- Component | Reading | Critical |
+| Component | Reading | Critical |
 | ------------ | -------- | ------- |
 | CPU Temp | 54 | No |
 | GPU Temp | 59 | No |
