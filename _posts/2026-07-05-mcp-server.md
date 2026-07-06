@@ -21,12 +21,12 @@ endpoints and presents the chat results.
 At a high level the pieces connect like this:
 
 ```mermaid
-flowchart LR
-    U[User / Open WebUI] -->|HTTP calls| W[Open WebUI frontend]
-    W -->|HTTP requests| S[MCP server fastmcp]
-    S -->|tool calls| T[Registered tools: cpu_temp, gpu_temp, ram_utilization, etc.]
+flowchart TD
+    U[User / Open WebUI] -- HTTP calls --> W[Open WebUI frontend]
+    W -- HTTP requests --> S[MCP server fastmcp]
+    S -- tool calls --> T[Registered tools: `cpu_temp`, `gpu_temp`, etc.]
     T --> S
-    S -->|JSON responses| W
+    S --> W
     W --> U
 ```
 
