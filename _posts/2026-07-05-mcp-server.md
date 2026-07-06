@@ -1,5 +1,5 @@
 ---
-title: "Building an MCP Server with `fastmcp` + Open WebUI"
+title: "Building an MCP Server with `fastmcp` and Open WebUI"
 date: 2026-07-05
 mermaid: true
 ---
