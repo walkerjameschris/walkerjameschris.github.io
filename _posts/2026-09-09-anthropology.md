@@ -4,7 +4,6 @@
 import re
 import json
 import tqdm
-import faiss
 import ollama
 import requests
 
@@ -15,10 +14,11 @@ import plotnine as p9
 from functools import reduce
 from numpy.typing import NDArray
 
-CHUNK_SIZE = 1000 # Words
+CHUNK_WORDS = 500
 
-LANGUAGE_MODEL = "gemma4:e2b"
+# IMPORTANT: This assumes a normalized embedding model!
 EMBEDDING_MODEL = "embeddinggemma"
+LANGUAGE_MODEL = "gemma4:e2b"
 
 URLS = {
     "Bible KJV": "https://www.gutenberg.org/cache/epub/10/pg10.txt",
@@ -58,38 +58,24 @@ POLES = {
 }
 
 def get_embeddings(model: str, text: str | list[str]) -> NDArray:
-    """Gets normalized embeddings as NumPy array"""
-    result = ollama.embed(model, text)
-    embeddings = np.array(result.embeddings, dtype=np.float32)
-    faiss.normalize_L2(embeddings)
-    return embeddings
+    result = ollama.embed(model, text).embeddings
+    return np.array(result, dtype=np.float32)
 
 #### Establish Vector Store ####
 
-null_embedding = ollama.embed(EMBEDDING_MODEL, "NULL")
-embedding_len = len(null_embedding.embeddings[0])
-
-vector_index = faiss.IndexFlatIP(embedding_len)
-
-#### Extract and Embed Books ####
+chunk_embeddings = []
 
 for book, url in tqdm.tqdm(URLS.items()):
-    
     text = requests.get(url).text.strip().split(" ")
-    chunk_range = range(0, len(text), CHUNK_SIZE)
-    chunks = [" ".join(text[i : i + CHUNK_SIZE]) for i in chunk_range]
+    chunk_range = range(0, len(text), CHUNK_WORDS)
+    chunks = [" ".join(text[i : i + CHUNK_WORDS]) for i in chunk_range]
+    chunk_embeddings.append(get_embeddings(EMBEDDING_MODEL, chunks))
 
-    # Embed chunks
-    vector_index.add(get_embeddings(EMBEDDING_MODEL, chunks))
+chunk_embeddings = np.vstack(chunk_embeddings)
 
 #### Generate Comparisons for Similarity ####
 
 comparisons = []
-
-# CRITICAL BUG FIX 2: Reconstruct chunk matrix from index sequentially to eliminate FAISS sorting side-effects
-chunk_vectors = np.zeros((vector_index.ntotal, embedding_len), dtype=np.float32)
-for i in range(vector_index.ntotal):
-    vector_index.reconstruct(i, chunk_vectors[i])
 
 for pole, description in tqdm.tqdm(POLES.items()):
 
@@ -107,11 +93,11 @@ for pole, description in tqdm.tqdm(POLES.items()):
     3. Return ONLY valid JSON matching the template below. 
     4. Do not include any reasoning, conversational text,
        markdown formatting blocks, or chatter. Only raw JSON.
-
+    
     JSON Template:
     {{"phrases": ["phrase 1", "phrase 2", "phrase 3"]}}
     """
-
+    
     # Responses from LLM with pole statements
     response = ollama.generate(
         model=LANGUAGE_MODEL,
@@ -123,7 +109,7 @@ for pole, description in tqdm.tqdm(POLES.items()):
     # Extract embeddings for pole statements
     phrases = json.loads(response["response"])["phrases"]
     pole_embeddings = get_embeddings(EMBEDDING_MODEL, phrases)
-    similarity = np.dot(chunk_vectors, pole_embeddings.T)
+    similarity = np.dot(chunk_embeddings, pole_embeddings.T)
 
     # Store as dataframe for correlation analysis
     comparisons.append(
@@ -140,7 +126,6 @@ for pole, description in tqdm.tqdm(POLES.items()):
             pl.col("value").mean().alias(pole)
         )
     )
-
 
 #### Visualize ####
 
