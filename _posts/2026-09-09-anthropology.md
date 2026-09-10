@@ -214,7 +214,7 @@ that all three dimensions are correlated!
 > align with both collectivist values and high-context communication styles. This
 > is further supported by the visualization below:
 
-![](/assets/anthro-corr.png)
+![](/assets/culture-corr.png)
 
 ## Limitations
 
