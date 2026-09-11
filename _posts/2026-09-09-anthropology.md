@@ -1,5 +1,5 @@
 ---
-title: "Using an LLM and Embeddings to Study Collective Cultures in History"
+title: "Using an LLM and Embeddings to Study Collective Cultures"
 date: "2026-09-09"
 ---
 
