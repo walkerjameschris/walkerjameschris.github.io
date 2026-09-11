@@ -74,9 +74,9 @@ if the text is of different lengths).
 
 | Example Text | Example Embedding (Numeric Representation) |
 | ------------ | ------------------------------------------ |
-| The quick brown fox..." | `[0.12, 0.34, 0.91]` |
-| The brown quick fox..." | `[0.11, 0.44, 0.89]` |
-| A tall building was..." | `[0.95, 0.01, 0.02]` |
+| The quick brown fox... | `[0.12, 0.34, 0.91]` |
+| The brown quick fox... | `[0.11, 0.44, 0.89]` |
+| A tall building was... | `[0.95, 0.01, 0.02]` |
 
 *Notice how the first two texts above have more similar numeric representations*
 *than the third text.*
@@ -204,8 +204,8 @@ that all three dimensions are correlated, but to varying degrees.
 | Agrarian | Context | 0.09 |
 | Agrarian | Collective | 0.69 |
 
-> The data supports the core hypothesis: agrarian economic structures consistently
-> align with both collectivist values and high-context communication styles. However,
+> The data supports the core hypothesis: collective cultures consistently
+> align with both agrarian societies and high-context communication styles. However,
 > the relationship between agrarian economic structures and high-context communication
 > is *weak* at best (for example, the more direct communication style of the agrarian Midwest).
 > This is further supported by the visualization below:
