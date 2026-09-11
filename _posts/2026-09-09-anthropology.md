@@ -93,8 +93,6 @@ an LLM (specifically `gemma4` from Google) using the following prompt template w
 is a statement like "Traditional agrarian life, seasonal crop reliance, rural harvesting, land
 ties, ancestral farming":
 
-This prompt would generate a response like:
-
 ```
 You are an expert cross-cultural anthropologist and linguist.
 
@@ -109,6 +107,8 @@ CRITICAL RULES:
 4. Do not include any reasoning, conversational text,
    markdown formatting blocks, or chatter. Only raw JSON.
 ```
+
+This prompt would generate responses like:
 
 ```json
 {
@@ -152,7 +152,7 @@ np.dot(
     np.array(llm_embed.embeddings),
     np.array(kjv_embed.embeddings).T
 ).item()
-#> 0.40
+# 0.40
 ```
 
 I then repeat this process across 10 statements across each of the three
@@ -207,10 +207,10 @@ that all three dimensions are correlated!
 
 ## Limitations
 
-- It's worth noting that individualistic cultures exhibit individualism (e.g. sports teams,
+- It's worth noting that individualistic cultures exhibit collectivism (e.g. sports teams,
   state pride, nationalism) and collective cultures exhibit individualism (selfishness,
   individual pride) but thinking of cultures along a spectrum of collectivism and individualism
-  is *helpful* as a mechanism.
+  is helpful as a mechanism.
 - Embedding models and language models are used to generate the results; while useful they
   may contain inherent biases and limitations for generating and measuring text similarity.
 - The selection of 5 texts is intentional, but limited. A more robust study would include
