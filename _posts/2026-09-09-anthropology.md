@@ -222,6 +222,7 @@ that all three dimensions are correlated, but to varying degrees.
   may contain inherent biases and limitations for generating and measuring text similarity.
 - The selection of 5 texts is intentional, but limited. A more robust study would include
   more texts.
+- I could further weight the text chunks to provide a more even distribution of literature styles.
 - I could have included a "control pole" which should be *totally* unrelated to the three
   anthropological dimensions that should have a near-zero correlation.
 - Given the relatively small sample size (~2000 observations) I could have bootstrapped the
