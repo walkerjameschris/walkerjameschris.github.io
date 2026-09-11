@@ -5,49 +5,46 @@ date: "2026-09-10"
 
 The United States is a decidedly *individualistic* culture. This is a cultural
 trait common in Western nations like Canada, the UK, and Australia. In an
-individualistic culture, the fundamental unit is the individual.
-While individuals in these cultures do care about their families and friends,
-the goals of an individual are prioritized over the goals of the group:
+individualistic culture, the fundamental unit is the individual. While
+individuals in these cultures do care about their families and friends, the
+goals of an individual are prioritized over the goals of the group:
 - Whom will *I* marry?
 - Where will *I* study?
 - Where will *I* live?
 - What will *I* do for work?
 
-The ancient societies found in the Bible are collective. They are also considered
-agrarian (agriculture based as opposed to industry) and high-context (where speech
-between people assumes a lot of shared knowledge and reading between the lines).
+Conversely, the ancient societies found in the Bible are collective. They are also
+considered agrarian (agriculture based economies) and high-context (where speech
+between people assumes a lot of shared knowledge and reading between the lines)
+([Richard and James, 2020](https://www.ivpress.com/misreading-scripture-with-individualist-eyes)).
 This means that while individual actions are important, the family and culture in
 which a person lives is where they find their identity. Thus, the goals of the group
 are prioritized over the goals of the individual:
-- How will my marriage provide benefit (by way of joining families; alliances) our *tribe*?
-  How will this *honor our* relatives?
-- What knowledge and wisdom can I provide to my *family*?
+- How will my marriage benefit our *tribe*?
+- What wisdom can I provide to my *family*?
 - Where will *we* live?
-- How will my occupation strengthen our *group*? Does this promote group harmony?
+- How will my occupation strengthen our *group*?
 
 Conversely, America in the industrial revolution was industrial, individualist
 and low-context (where speech is more blunt and assumes little shared knowledge).
 Individuals raced to build their own business empires often in *spite* of their
-upbringing (e.g., rags to riches).
+upbringing (i.e., rags to riches).
 
-However, the Deep South (particularly in early America) is somewhere in between
-the collectivism of ancient societies and American individualism. Individualism was
-taking root, but it still largely existed in an agrarian (cotton, tobacco) and
-high-context setting; anyone who has been told "bless your heart" knows that
+However, the Deep South, particularly in early America, is somewhere in between
+the collectivism of ancient societies and American individualism. Individualism
+was taking root, but it still largely existed in an agrarian (cotton, tobacco) and
+high-context setting. Anyone who has been told "bless your heart" knows that
 it can mean *many* different things based on the tones and context...
 
 ## Related Traits
 
-I hypothesized that as societies move from nomadic/agrarian to industrial
-that they would shed some of their collectivism in favor of individualism. Moreover
-in an individualistic society, people are often more explicit and direct in
-speech (this is called low-context where the speaker assumes the listener has
-little knowledge of how the speaker thinks) as opposed to high-context where there
-is lots of reading between the lines. This brings about anthropological "poles"
-I am interested in studying. My research question is as follows:
+I hypothesized that as societies move from collectivism in favor of individualism
+that they would also become less agrarian and embody low-context communication.
+This brings about anthropological "poles" I am interested in studying. My research
+question is as follows:
 
-> To what extent do collective societies structures predict the coexistence of
-> agrarian economic structures and high-context communication styles?
+> To what extent do collective societies predict the coexistence of agrarian
+> economic structures and high-context communication styles?
 
 ## Methods
 
@@ -75,9 +72,14 @@ text of arbitrary length (e.g., a few paragraphs) and return a *vector* (a list 
 of a fixed length. The more similar the list of numbers, the more similar the text (even
 if the text is of different lengths).
 
-- "The quick brown fox..." might become `[0.12, 0.34, 0.91]`
-- "The brown quick fox..." might become `[0.11, 0.44, 0.89]`
-- "A tall building was..." might become `[0.95, 0.01, 0.02]`
+| Example Text | Example Embedding (Numeric Representation) |
+| ------------ | ------------------------------------------ |
+| The quick brown fox..." | `[0.12, 0.34, 0.91]` |
+| The brown quick fox..." | `[0.11, 0.44, 0.89]` |
+| A tall building was..." | `[0.95, 0.01, 0.02]` |
+
+*Notice how the first two texts above have more similar numeric representations*
+*than the third text.*
 
 In an AI system, embeddings are used to determine which documents or web pages (out of 
 thousands of potential documents) are relevant to the question. This both improves the
@@ -86,11 +88,10 @@ augmented generation (RAG). Other systems exist, however, RAG remains very popul
 
 --- 
 
-Using these embeddings from the texts above, I will compare them to statements discussing
-*individualism*, *industrialization*, and *language context*. These statements are generated by
-an LLM (specifically `gemma4` from Google) using the following prompt template where *description*
-is a statement like "Traditional agrarian life, seasonal crop reliance, rural harvesting, land
-ties, ancestral farming":
+Using these embeddings from the texts above, I will compare them to statements
+discussing *individualism*, *industrialization*, and *language context*. These
+statements are generated by an LLM (specifically `gemma4` from Google) using the
+following prompt template:
 
 ```
 You are an expert cross-cultural anthropologist and linguist.
@@ -126,15 +127,19 @@ This prompt would generate responses like:
 }
 ```
 
-I then *embed* the statements above and compare them to the text fragments,
-such as a passage from the KJV:
+I then embed the statements above and compare them to the text chunks from
+the 5 source documents. For example, consider the following two texts. The first
+is a statement generated by an LLM which corresponds to the theme of "agrarian
+society" which we can compare to an agrarian verse from the KJV:
 
 - **LLM Statement:** "Ancestral seeds dictate the planting cycle and harvest timing."
 - **Verse from KJV:** "He that observeth the wind shall not sow; and he that regardeth the clouds shall not reap."
 
-Using `embeddinggemma` these two texts have a similarity of `0.4` where scores range from -1 to 1.
-Texts with a score of -1 are perfectly opposite where texts with a score of 1 are exactly the same.
-A score of `0.4` means these texts are related and moderately similar (using cosine similarity):
+Using `embeddinggemma` these two texts have a similarity of `0.4` where scores range
+from -1 to 1. Texts with a score of -1 are perfectly opposite where texts with a score
+of 1 are exactly the same. A score of `0.4` means these texts are related and moderately
+similar (using cosine similarity). Thus we might say that this text chunk from the
+KJV contains moderately agrarian themes.
 
 ```py
 import ollama
@@ -150,14 +155,17 @@ kjv_embed = ollama.embed("embeddinggemma", kjv_verse)
 np.dot(
     np.array(llm_embed.embeddings),
     np.array(kjv_embed.embeddings).T
-).item()
+)
 # 0.40
 ```
 
-I then repeat this process across 10 statements across each of the three
-"poles" for a total of 30 statements.
+We would then compare the same chunk from the KJV to statements from the two
+other poles (collectivism and high-context speech). This would allow us to measure
+how *agrarian*, *collective*, and *industrial* this chunk from the KJV is. If we
+repeat this for enough chunks (across all 5 input texts from the Gutenberg Press)
+then we can start to measure correlations between the three poles. 
 
-## Determining Scores for Each Text Fragment
+## Determining Scores for Each Text Chunk
 
 | Spectrum | Formula |
 | --- | --- |
@@ -166,7 +174,7 @@ I then repeat this process across 10 statements across each of the three
 | **Context** | Avg(10 High-Context) |
 
 In the end, I obtain a table like this (this is a `polars` data frame). Note also that each `id`
-or row corresponds to a 500 word text fragment in one of the 5 texts (e.g., the KJV or a passage
+or row corresponds to a 500 word text chunk in one of the 5 texts (e.g., the KJV or a passage
 in The Jungle).
 
 ```
@@ -186,9 +194,9 @@ shape: (2_070, 4)
 
 ## Results
 
-Using the similarity scores across over 2000 text fragments, I can determine the
+Using the similarity scores across over 2000 text chunks, I can determine the
 Pearson correlation between each of the three combinations of scores. It turns out
-that all three dimensions are correlated!
+that all three dimensions are correlated, but to varying degrees.
 
 | Dimension A | Dimension B | Pearson Correlation |
 | --- | --- | --- |
@@ -199,7 +207,7 @@ that all three dimensions are correlated!
 > The data supports the core hypothesis: agrarian economic structures consistently
 > align with both collectivist values and high-context communication styles. However,
 > the relationship between agrarian economic structures and high-context communication
-> is *weak* at best (for example, the direct communication style of the agrarian Midwest)
+> is *weak* at best (for example, the more direct communication style of the agrarian Midwest).
 > This is further supported by the visualization below:
 
 ![](/assets/culture-corr.png)
@@ -218,6 +226,8 @@ that all three dimensions are correlated!
   anthropological dimensions that should have a near-zero correlation.
 - Given the relatively small sample size (~2000 observations) I could have bootstrapped the
   results or used more chunks to generate a confidence interval.
+- This provides a cross section of texts popular in America. Results in other languages and
+  periods might provide *vastly* different results.
 
 ## Code
 
@@ -427,4 +437,4 @@ print(
 - [Gutenberg](https://www.gutenberg.org/)
 - [Ollama](https://ollama.com/)
 - [Google DeepMind](https://deepmind.google/)
-- [Reading Scripture with Individualistic Eyes](https://www.ivpress.com/misreading-scripture-with-individualist-eyes)
+- [Misreading Scripture with Individualistic Eyes](https://www.ivpress.com/misreading-scripture-with-individualist-eyes)
