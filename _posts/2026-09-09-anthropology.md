@@ -20,7 +20,7 @@ of the *collective* nature of ancient Biblical societies. This means that while
 individual actions are important, the family and culture in which a person lives
 is where they find their identity. Thus, the goals of the group are prioritized
 over the goals of the individual:
-- How will my marriage provide benefit (by way of joining families; alliances) out *tribe*?
+- How will my marriage provide benefit (by way of joining families; alliances) our *tribe*?
   How will this *honor our* relatives?
 - What knowledge and wisdom can I provide to my *family*?
 - Where will *we* live?
@@ -207,7 +207,7 @@ that all three dimensions are correlated!
 
 ## Limitations
 
-- Its worth noting that individualistic cultures exhibit individualism (e.g. sports teams,
+- It's worth noting that individualistic cultures exhibit individualism (e.g. sports teams,
   state pride, nationalism) and collective cultures exhibit individualism (selfishness,
   individual pride) but thinking of cultures along a spectrum of collectivism and individualism
   is *helpful* as a mechanism.
