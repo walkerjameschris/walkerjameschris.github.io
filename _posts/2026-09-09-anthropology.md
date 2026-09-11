@@ -1,7 +1,7 @@
 ---
 title: "Using an LLM and Embeddings to Study Collective Cultures"
 date: "2026-09-10”
-——-
+---
 
 The United States is a decidedly *individualistic* culture. This is a cultural
 trait common in Western nations like Canada, the UK, and Australia. In an
