@@ -1,13 +1,11 @@
 ---
 title: "Using an LLM and Embeddings to Study Collective Cultures"
-date: "2026-09-09"
----
-
-## Collectivism and Individualism
+date: "2026-09-10”
+——-
 
 The United States is a decidedly *individualistic* culture. This is a cultural
 trait common in Western nations like Canada, the UK, and Australia. In an
-individualistic culture, the fundamental unit is unsurprisingly, the individual.
+individualistic culture, the fundamental unit is the individual.
 While individuals in these cultures do care about their families and friends,
 the goals of an individual are prioritized over the goals of the group:
 - Whom will *I* marry?
@@ -15,40 +13,41 @@ the goals of an individual are prioritized over the goals of the group:
 - Where will *I* live?
 - What will *I* do for work?
 
-As someone who spends a lot of time reading Scripture, I am increasingly aware
-of the *collective* nature of ancient Biblical societies. This means that while
-individual actions are important, the family and culture in which a person lives
-is where they find their identity. Thus, the goals of the group are prioritized
-over the goals of the individual:
+The ancient societies found in the Bible are collective. They are also considered
+agrarian (agriculture based as opposed to industry) and high-context (where speech
+between people assumes a lot of shared knowledge and reading between the lines).
+This means that while individual actions are important, the family and culture in
+which a person lives is where they find their identity. Thus, the goals of the group
+are prioritized over the goals of the individual:
 - How will my marriage provide benefit (by way of joining families; alliances) our *tribe*?
   How will this *honor our* relatives?
 - What knowledge and wisdom can I provide to my *family*?
 - Where will *we* live?
 - How will my occupation strengthen our *group*? Does this promote group harmony?
 
-For example, the Bible exists in ancient agrarian, collective, and high-context
-societies where family lineage, honor/shame, and *reading between the lines* was
-how the cultures of the Bible operate. Conversely, America in the industrial
-revolution was industrial, individualist, and low-context; business tycoons and
-individuals raced to build their own business empires often in *spite* of their
-upbringing (e.g., rags to riches). However, the Deep South (particularly in early
-America) is somewhere in between where American individualism was taking root,
-but it still largely existed in an agrarian (cotton, tobacco) and high-context
-setting; anyone who has been told "bless your heart" knows that it can mean
-*many* different things based on the tones and context...
+Conversely, America in the industrial revolution was industrial, individualist
+and low-context (where speech is more blunt and assumes little shared knowledge).
+Individuals raced to build their own business empires often in *spite* of their
+upbringing (e.g., rags to riches).
+
+However, the Deep South (particularly in early America) is somewhere in between
+the collectivism of ancient societies and American individualism. Individualism was
+taking root, but it still largely existed in an agrarian (cotton, tobacco) and
+high-context setting; anyone who has been told "bless your heart" knows that
+it can mean *many* different things based on the tones and context...
 
 ## Related Traits
 
 I hypothesized that as societies move from nomadic/agrarian to industrial
 that they would shed some of their collectivism in favor of individualism. Moreover
-in an individualistic society, people are generally more explicit and direct in
+in an individualistic society, people are often more explicit and direct in
 speech (this is called low-context where the speaker assumes the listener has
 little knowledge of how the speaker thinks) as opposed to high-context where there
 is lots of reading between the lines. This brings about anthropological "poles"
 I am interested in studying. My research question is as follows:
 
-> To what extent do agrarian economic structures predict the coexistence of
-> collectivist cultural values and high-context communication styles?
+> To what extent do collective societies structures predict the coexistence of
+> agrarian economic structures and high-context communication styles?
 
 ## Methods
 
