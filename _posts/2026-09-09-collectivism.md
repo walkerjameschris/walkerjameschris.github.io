@@ -25,7 +25,9 @@ are prioritized over the goals of the individual:
 - Where will *we* live?
 - How will my occupation strengthen our *group*?
 
-Conversely, America in the industrial revolution was industrial, individualist
+---
+
+America in the industrial revolution was industrial, individualist
 and low-context (where speech is more blunt and assumes little shared knowledge).
 Individuals raced to build their own business empires often in *spite* of their
 upbringing (i.e., rags to riches).
