@@ -76,9 +76,9 @@ text of arbitrary length (e.g., a few paragraphs) and return a *vector* (a list 
 of a fixed length. The more similar the list of numbers, the more similar the text (even
 if the text is of different lengths).
 
-"The quick brown fox..." might become `[0.12, 0.34, 0.91]`
-"The brown quick fox..." might become `[0.11, 0.44, 0.89]`
-"A tall building was..." might become `[0.95, 0.01, 0.02]`
+- "The quick brown fox..." might become `[0.12, 0.34, 0.91]`
+- "The brown quick fox..." might become `[0.11, 0.44, 0.89]`
+- "A tall building was..." might become `[0.95, 0.01, 0.02]`
 
 In an AI system, embeddings are used to determine which documents or web pages (out of 
 thousands of potential documents) are relevant to the question. This both improves the
@@ -108,24 +108,21 @@ CRITICAL RULES:
 3. Return ONLY valid JSON matching the template below. 
 4. Do not include any reasoning, conversational text,
    markdown formatting blocks, or chatter. Only raw JSON.
-
-JSON Template:
-{{"phrases": ["phrase 1", "phrase 2", "phrase 3"]}}
 ```
 
 ```json
 {
-  'phrases': [
-    'Ancestral seeds dictate the planting cycle and harvest timing.',
-    'The communal field dictates seasonal labor and land boundaries.',
-    'Harvest rituals bind the family to the ancestral soil.',
-    'Seasonal shifts determine the rhythm of the entire community.',
-    'Land ties define kinship and the obligation to the earth.',
-    'Crop rotation governs the annual cycle of rural existence.',
-    'The ancestral path dictates the boundaries of the cultivated land.',
-    'Harvesting is a sacred, seasonal obligation of the lineage.',
-    'Farming is a cyclical, inherited practice of rural life.',
-    'The land dictates the rhythm of the ancestral farming.'
+  "phrases": [
+    "Ancestral seeds dictate the planting cycle and harvest timing.",
+    "The communal field dictates seasonal labor and land boundaries.",
+    "Harvest rituals bind the family to the ancestral soil.",
+    "Seasonal shifts determine the rhythm of the entire community.",
+    "Land ties define kinship and the obligation to the earth.",
+    "Crop rotation governs the annual cycle of rural existence.",
+    "The ancestral path dictates the boundaries of the cultivated land.",
+    "Harvesting is a sacred, seasonal obligation of the lineage.",
+    "Farming is a cyclical, inherited practice of rural life.",
+    "The land dictates the rhythm of the ancestral farming."
   ]
 }
 ```
@@ -158,26 +155,16 @@ np.dot(
 #> 0.40
 ```
 
-I then repeat this process across 10 statements across 6 "poles" for a total of 60 statements.
+I then repeat this process across 10 statements across each of the three
+"poles" for a total of 30 statements.
 
 ## Determining Scores for Each Text Fragment
 
-Lets walk through how I determine a score across each of these poles:
-- Collectivism *to* Individualism
-- Agrarianism *to* Industrialization
-- High-Context *to* Low-Context Communication
-
-1. **Average the groups:** Take the 10 similarity scores for each trait and average them. This gives you **6 main scores** (Agrarian, Industrial, Collective, Individual, High-Context, Low-Context).
-2. **Play tug-of-war:** Subtract the opposite score from each primary score to place the text on a spectrum:
-   * **Agrarian Score** = Agrarian minus Industrial
-   * **Collective Score** = Collective minus Individual
-   * **Context Score** = Low-Context minus High-Context
-
-| Spectrum | Formula | Result |
-| --- | --- | --- |
-| **Agrarian** | Avg(10 Agrarian) − Avg(10 Industrial) | **+** Agrarian / **−** Industrial |
-| **Collective** | Avg(10 Collective) − Avg(10 Individual) | **+** Collective / **−** Individual |
-| **Context** | Avg(10 Low-Context) − Avg(10 High-Context) | **+** Direct / **−** Indirect |
+| Spectrum | Formula |
+| --- | --- |
+| **Agrarian** | Avg(10 Agrarian) |
+| **Collective** | Avg(10 Collective) |
+| **Context** | Avg(10 High-Context) |
 
 In the end, I obtain a table like this (this is a `polars` data frame). Note also that each `id`
 or row corresponds to a 500 word text fragment in one of the 5 texts (e.g., the KJV or a passage
@@ -206,13 +193,15 @@ that all three dimensions are correlated!
 
 | Dimension A | Dimension B | Pearson Correlation |
 | --- | --- | --- |
-| Agrarian | Context | 0.46 |
-| Collective | Context | 0.74 |
-| Agrarian | Collective | 0.49 |
+| Collective | Context | 0.32 |
+| Agrarian | Context | 0.09 |
+| Agrarian | Collective | 0.69 |
 
-> The data supports the core hypothesis—agrarian economic structures consistently
-> align with both collectivist values and high-context communication styles. This
-> is further supported by the visualization below:
+> The data supports the core hypothesis: agrarian economic structures consistently
+> align with both collectivist values and high-context communication styles. However,
+> the relationship between agrarian economic structures and high-context communication
+> is *weak* at best (for example, the direct communication style of the agrarian Midwest)
+> This is further supported by the visualization below:
 
 ![](/assets/culture-corr.png)
 
@@ -255,7 +244,6 @@ from numpy.typing import NDArray
 
 CHUNK_WORDS = 500
 
-# IMPORTANT: This assumes a normalized embedding model!
 EMBEDDING_MODEL = "embeddinggemma"
 LANGUAGE_MODEL = "gemma4:e2b"
 
@@ -272,40 +260,38 @@ POLES = {
     Traditional agrarian life, seasonal crop reliance,
     rural harvesting, land ties, ancestral farming
     """,
-    "industrial": """
-    Industrial automation, assembly line labor, urban
-    manufacturing, hourly wages, corporate clocking-in
-    """,
     "collective": """
     Group harmony, sacrificing personal desires for
     family honor, community duty, filial piety, collective
     accountability
     """,
-    "individual": """
-    Radical self-reliance, individual autonomy, personal
-    freedom, pursuing independent ambition, breaking social
-    conformity
-    """,
     "high_context": """
     Reading between the lines, heavily implied subtext,
     unspoken social hierarchies, indirect speech, saving face
-    """,
-    "low_context": """
-    Direct and literal speech, explicit legal contracts,
-    spelling everything out plainly, unambiguous statements
     """
 }
 
 def get_embeddings(model: str, text: str | list[str]) -> NDArray:
+    """Returns embeddings with L2 normalization"""
+    
     result = ollama.embed(model, text).embeddings
-    return np.array(result, dtype=np.float32)
+    arr = np.array(result, dtype=np.float32)
+
+    # Handle 1D arrays
+    if arr.ndim == 1:
+        norm = np.linalg.norm(arr)
+        return arr / norm if norm > 0 else arr
+
+    norms = np.linalg.norm(arr, axis=1, keepdims=True)
+    norms[norms == 0] = 1.0
+    return arr / norms
 
 #### Establish Vector Store ####
 
 chunk_embeddings = []
 
 for book, url in tqdm.tqdm(URLS.items()):
-    text = requests.get(url).text.strip().split(" ")
+    text = requests.get(url).text.strip().split()
     chunk_range = range(0, len(text), CHUNK_WORDS)
     chunks = [" ".join(text[i : i + CHUNK_WORDS]) for i in chunk_range]
     chunk_embeddings.append(get_embeddings(EMBEDDING_MODEL, chunks))
@@ -375,9 +361,9 @@ joint_similarity = (
     )
     .select(
         "id",
-        (pl.col("agrarian") - pl.col("industrial")).alias("Agrarian"),
-        (pl.col("collective") - pl.col("individual")).alias("Collective"),
-        (pl.col("low_context") - pl.col("high_context")).alias("Context")
+        pl.col("agrarian").alias("Agrarian"),
+        pl.col("collective").alias("Collective"),
+        pl.col("high_context").alias("Context")
     )
     .unpivot(
         index="id"
@@ -421,9 +407,8 @@ plot = (
         panel_grid_minor=p9.element_blank(),
         plot_title=p9.element_text(face="bold")
     ) +
-    p9.facet_grid(
-        cols="variable",
-        rows="variable_right"
+    p9.facet_wrap(
+        facets="~ variable + variable_right"
     )
 )
 
