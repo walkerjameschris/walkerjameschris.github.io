@@ -202,14 +202,14 @@ that all three dimensions are correlated, but to varying degrees.
 
 | Dimension A | Dimension B | Pearson Correlation |
 | --- | --- | --- |
-| Collective | Context | 0.32 |
-| Agrarian | Context | 0.09 |
-| Agrarian | Collective | 0.69 |
+| Collective | Context | 0.44 |
+| Collective | Agrarian | 0.57 | 
+| Context | Agrarian | -0.01 |
 
 > The data supports the core hypothesis: collective cultures consistently
 > align with both agrarian societies and high-context communication styles. However,
 > the relationship between agrarian economic structures and high-context communication
-> is *weak* at best (for example, the more direct communication style of the agrarian Midwest).
+> is effectively zero (for example, the more direct communication style of the agrarian Midwest).
 > This is further supported by the visualization below:
 
 ![](/assets/culture-corr.png)
