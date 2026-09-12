@@ -62,8 +62,8 @@ and embed using an embedding model:
 | Book | Summary | Expected Pole Alignment |
 | ---- | ------- | ----------------------- |
 | [KJV Bible](https://www.gutenberg.org/cache/epub/10/pg10.txt) | Scripture, lots of subtext and cultural influence, honor-shame | Agrarian, Collective, and High-Context |
-| [The Southerner](https://www.gutenberg.org/cache/epub/15865/pg15865.txt) | Early 20th-century Southern text tracking family legacy and honor/shame | Agrarian, Collective, and High-Context |
-| [O Pioneers](https://www.gutenberg.org/cache/epub/2426/pg2426.txt) | Midwestern frontier farming completely stripped of collective safety nets, highlighting radical self-reliance. | Agrarian, Individualist, and Low-Context |
+| [The Southerner](https://www.gutenberg.org/cache/epub/19135/pg19135.txt) | Early 20th-century Southern text tracking family legacy and honor/shame | Agrarian, Collective, and High-Context |
+| [O Pioneers](https://www.gutenberg.org/cache/epub/24/pg24.txt) | Midwestern frontier farming completely stripped of collective safety nets, highlighting radical self-reliance. | Agrarian, Individualist, and Low-Context |
 | [The Jungle](https://www.gutenberg.org/cache/epub/140/pg140.txt) | Chicago slaughterhouses; focuses heavily on the mechanics of industrial wages and the explicit push for labor unions. | Industrial, Collective, and Low-Context |
 | [The Iron Heel](https://www.gutenberg.org/cache/epub/1164/pg1164.txt) | Set in a gritty industrial future. London focuses aggressively on individual steel/rail oligarchs and raw corporate power. | Industrial, Individualist, and Low-Context |
 
@@ -261,8 +261,8 @@ LANGUAGE_MODEL = "gemma4:e2b"
 
 URLS = {
     "Bible KJV": "https://www.gutenberg.org/cache/epub/10/pg10.txt",
-    "The Southerner": "https://www.gutenberg.org/cache/epub/15865/pg15865.txt",
-    "O Pioneers": "https://www.gutenberg.org/cache/epub/2426/pg2426.txt",
+    "The Southerner": "https://www.gutenberg.org/cache/epub/19135/pg19135.txt",
+    "O Pioneers": "https://www.gutenberg.org/cache/epub/24/pg24.txt",
     "The Jungle": "https://www.gutenberg.org/cache/epub/140/pg140.txt",
     "The Iron Heel": "https://www.gutenberg.org/cache/epub/1164/pg1164.txt"
 }
