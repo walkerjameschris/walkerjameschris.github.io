@@ -241,7 +241,6 @@ is running with the `OLLAMA_HOST` environment variable is set with `embeddinggem
 ```py
 #### Setup ####
 
-import re
 import json
 import tqdm
 import ollama
