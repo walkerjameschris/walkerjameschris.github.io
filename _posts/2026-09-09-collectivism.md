@@ -61,8 +61,8 @@ and embed using an embedding model:
 
 | Book | Summary | Expected Pole Alignment |
 | ---- | ------- | ----------------------- |
-| [KJV Bible](https://www.gutenberg.org/cache/epub/10/pg10.txt) | Scripture, lots of subtext and cultural influence, honor-shame | Agrarian, Collective, and High-Context |
-| [The Southerner](https://www.gutenberg.org/cache/epub/19135/pg19135.txt) | Early 20th-century Southern text tracking family legacy and honor/shame | Agrarian, Collective, and High-Context |
+| [KJV Bible](https://www.gutenberg.org/cache/epub/10/pg10.txt) | Scripture, lots of subtext and cultural influence, honor-shame. | Agrarian, Collective, and High-Context |
+| [The Southerner](https://www.gutenberg.org/cache/epub/19135/pg19135.txt) | Early 20th-century Southern text tracking family legacy and honor/shame. | Agrarian, Collective, and High-Context |
 | [O Pioneers](https://www.gutenberg.org/cache/epub/24/pg24.txt) | Midwestern frontier farming completely stripped of collective safety nets, highlighting radical self-reliance. | Agrarian, Individualist, and Low-Context |
 | [The Jungle](https://www.gutenberg.org/cache/epub/140/pg140.txt) | Chicago slaughterhouses; focuses heavily on the mechanics of industrial wages and the explicit push for labor unions. | Industrial, Collective, and Low-Context |
 | [The Iron Heel](https://www.gutenberg.org/cache/epub/1164/pg1164.txt) | Set in a gritty industrial future. London focuses aggressively on individual steel/rail oligarchs and raw corporate power. | Industrial, Individualist, and Low-Context |
@@ -163,7 +163,7 @@ np.dot(
 
 We would then compare the same chunk from the KJV to statements from the two
 other poles (collectivism and high-context speech). This would allow us to measure
-how *agrarian*, *collective*, and *industrial* this chunk from the KJV is. If we
+how *agrarian*, *collective*, and *contextual* this chunk from the KJV is. If we
 repeat this for enough chunks (across all 5 input texts from the Gutenberg Press)
 then we can start to measure correlations between the three poles. 
 
@@ -197,8 +197,7 @@ shape: (2_070, 4)
 ## Results
 
 Using the similarity scores across over 2000 text chunks, I can determine the
-Pearson correlation between each of the three combinations of scores. It turns out
-that all three dimensions are correlated, but to varying degrees.
+Pearson correlation between each of the three combinations of scores:
 
 | Dimension A | Dimension B | Pearson Correlation |
 | --- | --- | --- |
