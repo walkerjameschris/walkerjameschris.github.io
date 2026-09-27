@@ -2,11 +2,12 @@
 #### Setup ####
 
 #> uv init project && cd project
-#> uv add nltk torch polars pyarrow plotnine umap-learn iprogress tqdm
+#> uv add nltk torch polars pyarrow plotnine umap-learn numpy
 
 import umap
 import nltk
 import torch
+import numpy as np
 import polars as pl
 import plotnine as p9
 from nltk.corpus import cmudict
@@ -17,6 +18,13 @@ MAX_SYLLABLES = 10
 MAX_WORD_LENGTH = 15
 EMBEDDING_DIMENSIONS = 64
 LSTM_HIDDEN_DIMENSIONS = 128
+
+# These are for visualizing specific words on the
+# clustering plot even if they aren't included
+# based on the "every-N" downsample
+EVERY_N = 50
+EXAMPLE_CLUSTERING_WORDS = ["apple", "grapple", "grape"]
+EXAMPLE_CLUSTERING_SYLLABLES = [2, 2, 1]
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Running on: {device.upper()}")
@@ -135,15 +143,59 @@ for epoch in range(EPOCHS):
         
     print(f"Epoch {epoch}/{EPOCHS} | Loss: {loss.item():.4f}")
 
+model.eval()
+
 #### Visualize Clusters ####
 
-# TODO: Revisit this
-embeddings = model.embedding(X).to("cpu").detach().numpy()
-cluster = umap.UMAP(n_neighbors=15, min_dist=0.1, random_state=42)
+# Pass cluster sample through model
+with torch.no_grad():
+    cluster_words = words[0::EVERY_N] + EXAMPLE_CLUSTERING_WORDS
+    cluster_syllables = syllables[0::EVERY_N] + EXAMPLE_CLUSTERING_SYLLABLES
+    X_cluster = torch.LongTensor(encode(cluster_words)).to(device)
+    cluster_output = model(X_cluster).detach().cpu().numpy()
 
-#### Test with Haiku! ####
+# Establish UMAP clustering model
+cluster_umap = umap.UMAP(
+    n_neighbors=15,
+    min_dist=0.1,
+    random_state=42,
+    n_jobs=1
+)
 
-model.eval()
+# Create data frame for plotting
+cluster_sample = (
+    pl.DataFrame(
+        cluster_umap.fit_transform(cluster_output),
+        schema=["Dimension 1", "Dimension 2"]
+    )
+    .with_columns(
+        words=pl.Series(cluster_words),
+        syllables=pl.Series(cluster_syllables)
+    )
+    .unique()
+)
+
+plot = (
+    p9.ggplot(
+        data=cluster_sample,
+        mapping=p9.aes(
+            x="Dimension 1",
+            y="Dimension 2",
+            color = "factor(syllables)"
+        )
+    ) +
+    p9.geom_point() +
+    p9.geom_label(
+        mapping=p9.aes(label="words"),
+        data=cluster_sample.filter(
+            pl.col("words").is_in(EXAMPLE_CLUSTERING_WORDS)
+        )
+    )
+)
+
+plot.show()
+
+#### Test with Haikus! ####
 
 @torch.no_grad()
 def count_haiku(poem):
@@ -172,9 +224,14 @@ poems = {
         "This is six syllables",
         "Which is the wrong amount",
         "For a five seven five haiku"
+    ],
+    "rey": [
+        "Rey is a special boy",
+        "Cridget"
     ]
 }
 
 for poem, contents in poems.items():
     print(f"{poem}: {count_haiku(contents)}")
+
 ```
