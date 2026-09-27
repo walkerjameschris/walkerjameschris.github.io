@@ -1,3 +1,58 @@
+---
+title: "Using Deep Learning to Count Syllables for Haikus"
+date: "2026-09-27"
+---
+
+I enjoy writing haiku poems and I also enjoy deep learning. So
+I thought, what about building a deep learning model to predict
+the number of syllables in a word! While it is reasonable to use
+a lookup table to determine the syllables in a word, building a
+model allows us to check syllable counts for haiku poems to
+leverage proper nouns and new words not available in a lookup.
+
+## Data
+
+To build my model, I am using `nltk` and the `cmudict` dataset.
+This dataset of over 100k words includes pronunciations for
+each word. We can parse these pronunciations to build targets
+for our model.
+
+For example, `apple` is represented by the pronunciation below.
+We count the number of times a fragment ends with a digit, so
+`AE1` and `AH0` end with integers. So there are two syllables
+in this word!
+
+```py
+['AE1', 'P', 'AH0', 'L']
+```
+
+---
+
+We repeat this for every word and then we obtain the "truth"
+values for our model. Now how do we feed words into a model?
+We are going to build a deep learning model which means we need
+to create *numeric `tensor` representations* of words.
+
+To keep things reasonable, I limited the word *length* to 15
+characters. So let's take `apple` again. We will represent
+`apple` as an encoding. Since "a" is the first letter, it gets a
+`1`, and "p" is the sixteenth letter, so it gets a `16`, and
+so on. Then, for any unused characters we give them a `0`.
+
+```py
+[1, 16, 16, 12, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+```
+
+We repeat this for all words and then we have the inputs (word
+encodings) and outputs (syllable counts).
+
+## Architecture
+
+Our model is two major components:
+1. An embedding component (to convert encodings to latent vectors)
+2. Long-Short-Term-Memory or LSTM (to learn the relationships
+   *across* the letters of a word, both backwards and forwards.
+
 ```py
 #### Setup ####
 
@@ -70,7 +125,7 @@ assert max(len(i) for i in words) <= MAX_WORD_LENGTH
 
 #### Build Dataset ####
 
-letters = set("".join(words))
+letters = sorted(set("".join(words)))
 char_to_idx = {v: i + 1 for i, v in enumerate(letters)}
 char_to_idx[""] = 0 # This is the NULL padding index
 
