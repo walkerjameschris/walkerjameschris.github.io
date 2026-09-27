@@ -2,10 +2,13 @@
 #### Setup ####
 
 #> uv init project && cd project
-#> uv add nltk torch nltk
+#> uv add nltk torch polars pyarrow plotnine umap-learn iprogress tqdm
 
+import umap
 import nltk
 import torch
+import polars as pl
+import plotnine as p9
 from nltk.corpus import cmudict
 
 EPOCHS = 50
@@ -20,7 +23,7 @@ print(f"Running on: {device.upper()}")
 
 #### Extract Words ####
 
-nltk.download("cmudict")
+nltk.download("cmudict", quiet=True)
 dictionary = cmudict.dict()
 
 words = []
@@ -33,7 +36,7 @@ for word, data in dictionary.items():
         continue
 
     # Words must ONLY be letters, no contractions
-    if any(not word.isalpha() for i in word):
+    if not word.isalpha():
         continue
 
     # Here data is a list of technical representations
@@ -95,14 +98,14 @@ class SyllableClassifier(torch.nn.Module):
         self.lstm = torch.nn.LSTM(
             input_size=EMBEDDING_DIMENSIONS,
             hidden_size=LSTM_HIDDEN_DIMENSIONS,
-            num_layers=2, # Might add a hyperparameter here
+            num_layers=2,
             batch_first=True,
             bidirectional=True
         )
         
         self.fc = torch.nn.Linear(
             in_features=LSTM_HIDDEN_DIMENSIONS * 2,
-            out_features=MAX_SYLLABLES
+            out_features=MAX_SYLLABLES + 1
         )
         
     def forward(self, x):
@@ -124,26 +127,25 @@ for epoch in range(EPOCHS):
     )
     
     for X_batch, y_batch in batches:
-
-        # Move tensors to device
-        X_batch = X_batch.to(device)
-        y_batch = y_batch.to(device)
-
-        # Clear gradients for forward pass
         optimizer.zero_grad()
         outputs = model(X_batch)
-
-        # Measure loss function
         loss = criterion(outputs, y_batch)
-
-        # Backwards pass and step
         loss.backward()
         optimizer.step()
         
     print(f"Epoch {epoch}/{EPOCHS} | Loss: {loss.item():.4f}")
 
+#### Visualize Clusters ####
+
+# TODO: Revisit this
+embeddings = model.embedding(X).to("cpu").detach().numpy()
+cluster = umap.UMAP(n_neighbors=15, min_dist=0.1, random_state=42)
+
 #### Test with Haiku! ####
 
+model.eval()
+
+@torch.no_grad()
 def count_haiku(poem):
     result = []
     for line in poem:
