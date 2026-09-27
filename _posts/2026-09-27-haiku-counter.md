@@ -8,7 +8,7 @@ import nltk
 import torch
 from nltk.corpus import cmudict
 
-EPOCHS = 15
+EPOCHS = 50
 BATCH_SIZE = 256
 MAX_SYLLABLES = 10
 MAX_WORD_LENGTH = 15
@@ -114,7 +114,7 @@ class SyllableClassifier(torch.nn.Module):
 
 model = SyllableClassifier(len(char_to_idx)).to(device)
 criterion = torch.nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 for epoch in range(EPOCHS):
     
@@ -175,5 +175,4 @@ poems = {
 
 for poem, contents in poems.items():
     print(f"{poem}: {count_haiku(contents)}")
-
 ```
