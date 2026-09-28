@@ -46,25 +46,118 @@ so on. Then, for any unused characters we give them a `0`.
 We repeat this for all words and then we have the inputs (word
 encodings) and outputs (syllable counts).
 
-## Architecture
+## Model Architecture and Training
 
 Our model is two major components:
 1. An embedding component (to convert encodings to latent vectors)
 2. Long-Short-Term-Memory or LSTM (to learn the relationships
    *across* the letters of a word, both backwards and forwards.
 
+We define this model using `torch.nn.Module` and construct define
+`embedding` and `lstm` members. We also define the `forward` pass
+as is standard practice:
+
+```py
+class SyllableClassifier(torch.nn.Module):
+    
+    def __init__(self, vocab_size):
+        super().__init__()
+        
+        self.embedding = torch.nn.Embedding(
+            num_embeddings=vocab_size,
+            embedding_dim=EMBEDDING_DIMENSIONS,
+            padding_idx=0
+        )
+        
+        self.lstm = torch.nn.LSTM(
+            input_size=EMBEDDING_DIMENSIONS,
+            hidden_size=LSTM_HIDDEN_DIMENSIONS,
+            num_layers=2,
+            batch_first=True,
+            bidirectional=True
+        )
+        
+        self.fc = torch.nn.Linear(
+            in_features=LSTM_HIDDEN_DIMENSIONS * 2,
+            out_features=MAX_SYLLABLES + 1
+        )
+        
+    def forward(self, x):
+        embedded = self.embedding(x)
+        lstm_out, _ = self.lstm(embedded)
+        return self.fc(lstm_out[:, -1, :]) # Last character timestep
+```
+
+---
+
+Using this model, we define a standard training loop including a
+loss function (Cross Entropy), and an ADAM optimizer. This is
+then looped over a defined number of `EPOCHS`. Note that we 
+divide the training data into *batches* using `torch.split`:
+
+```py
+for epoch in range(EPOCHS):
+    
+    batches = zip(
+        torch.split(X, BATCH_SIZE),
+        torch.split(y, BATCH_SIZE)
+    )
+    
+    for X_batch, y_batch in batches:
+        optimizer.zero_grad()
+        outputs = model(X_batch)
+        loss = criterion(outputs, y_batch)
+        loss.backward()
+        optimizer.step()
+        
+    print(f"Epoch {epoch}/{EPOCHS} | Loss: {loss.item():.4f}")
+```
+
+## Evaluation
+
+From here, we can try out our model! I defined a helper function
+which allows a user to pass a complete haiku and obtain results.
+Consider these three haiku poems:
+
+> Coffee aroma
+> Flows freely from room to room
+> Sunlight pours inside
+
+> Dark misty hillsides
+> Damp ferns hidden in the fog
+> Water drips on moss
+
+> This is six syllables
+> Which is the wrong amount
+> For a five seven five haiku
+
+Which turns into the result below. Recall that a haiku follows
+a strict 5, 7, 5 syllable pattern:
+
+```py
+[5, 7, 5] # Valid
+[5, 7, 5] # Valid
+[6, 6, 8] # Invalid!
+```
+
+It even works for *new* made up words like *Cridget* returns 2
+as it is pronounced *Cri-dget*!
+
+## Code
+
+Here is the complete end to end code. Note that it was run within
+a `uv` environment with a GPU. However, even on CPU, this model
+is small enough to converge in a few minutes (maybe 5-15). However,
+8-10gb of RAM (or VRAM) is essential!
+
 ```py
 #### Setup ####
 
 #> uv init project && cd project
-#> uv add nltk torch polars pyarrow plotnine umap-learn numpy
+#> uv add nltk torch
 
-import umap
 import nltk
 import torch
-import numpy as np
-import polars as pl
-import plotnine as p9
 from nltk.corpus import cmudict
 
 EPOCHS = 50
@@ -198,59 +291,9 @@ for epoch in range(EPOCHS):
         
     print(f"Epoch {epoch}/{EPOCHS} | Loss: {loss.item():.4f}")
 
-model.eval()
-
-#### Visualize Clusters ####
-
-# Pass cluster sample through model
-with torch.no_grad():
-    cluster_words = words[0::EVERY_N] + EXAMPLE_CLUSTERING_WORDS
-    cluster_syllables = syllables[0::EVERY_N] + EXAMPLE_CLUSTERING_SYLLABLES
-    X_cluster = torch.LongTensor(encode(cluster_words)).to(device)
-    cluster_output = model(X_cluster).detach().cpu().numpy()
-
-# Establish UMAP clustering model
-cluster_umap = umap.UMAP(
-    n_neighbors=15,
-    min_dist=0.1,
-    random_state=42,
-    n_jobs=1
-)
-
-# Create data frame for plotting
-cluster_sample = (
-    pl.DataFrame(
-        cluster_umap.fit_transform(cluster_output),
-        schema=["Dimension 1", "Dimension 2"]
-    )
-    .with_columns(
-        words=pl.Series(cluster_words),
-        syllables=pl.Series(cluster_syllables)
-    )
-    .unique()
-)
-
-plot = (
-    p9.ggplot(
-        data=cluster_sample,
-        mapping=p9.aes(
-            x="Dimension 1",
-            y="Dimension 2",
-            color = "factor(syllables)"
-        )
-    ) +
-    p9.geom_point() +
-    p9.geom_label(
-        mapping=p9.aes(label="words"),
-        data=cluster_sample.filter(
-            pl.col("words").is_in(EXAMPLE_CLUSTERING_WORDS)
-        )
-    )
-)
-
-plot.show()
-
 #### Test with Haikus! ####
+
+model.eval()
 
 @torch.no_grad()
 def count_haiku(poem):
@@ -279,14 +322,9 @@ poems = {
         "This is six syllables",
         "Which is the wrong amount",
         "For a five seven five haiku"
-    ],
-    "rey": [
-        "Rey is a special boy",
-        "Cridget"
     ]
 }
 
 for poem, contents in poems.items():
     print(f"{poem}: {count_haiku(contents)}")
-
 ```
