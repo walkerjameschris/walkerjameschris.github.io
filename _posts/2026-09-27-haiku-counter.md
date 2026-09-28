@@ -119,25 +119,28 @@ From here, we can try out our model! I defined a helper function
 which allows a user to pass a complete haiku and obtain results.
 Consider these three haiku poems:
 
-> Coffee aroma
-> Flows freely from room to room
+**Coffee:**
+> Coffee aroma \
+> Flows freely from room to room \
 > Sunlight pours inside
 
-> Dark misty hillsides
-> Damp ferns hidden in the fog
+**Mist:**
+> Dark misty hillsides \
+> Damp ferns hidden in the fog \
 > Water drips on moss
 
-> This is six syllables
-> Which is the wrong amount
+**Weird:**
+> This is six syllables \
+> Which is the wrong amount \
 > For a five seven five haiku
 
 Which turns into the result below. Recall that a haiku follows
 a strict 5, 7, 5 syllable pattern:
 
 ```py
-[5, 7, 5] # Valid
-[5, 7, 5] # Valid
-[6, 6, 8] # Invalid!
+coffee: [5, 7, 5]
+mist: [5, 7, 5]
+weird: [6, 6, 8]
 ```
 
 It even works for *new* made up words like *Cridget* returns 2
@@ -148,13 +151,10 @@ as it is pronounced *Cri-dget*!
 Here is the complete end to end code. Note that it was run within
 a `uv` environment with a GPU. However, even on CPU, this model
 is small enough to converge in a few minutes (maybe 5-15). However,
-8-10gb of RAM (or VRAM) is essential!
+8-10gb of VRAM is essential! It only requires `uv add nltk torch`:
 
 ```py
 #### Setup ####
-
-#> uv init project && cd project
-#> uv add nltk torch
 
 import nltk
 import torch
@@ -267,7 +267,7 @@ class SyllableClassifier(torch.nn.Module):
     def forward(self, x):
         embedded = self.embedding(x)
         lstm_out, _ = self.lstm(embedded)
-        return self.fc(lstm_out[:, -1, :]) # Last character timestep
+        return self.fc(lstm_out[:, -1, :])
 
 #### Train Model ####
 
