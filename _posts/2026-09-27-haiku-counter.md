@@ -167,13 +167,6 @@ MAX_WORD_LENGTH = 15
 EMBEDDING_DIMENSIONS = 64
 LSTM_HIDDEN_DIMENSIONS = 128
 
-# These are for visualizing specific words on the
-# clustering plot even if they aren't included
-# based on the "every-N" downsample
-EVERY_N = 50
-EXAMPLE_CLUSTERING_WORDS = ["apple", "grapple", "grape"]
-EXAMPLE_CLUSTERING_SYLLABLES = [2, 2, 1]
-
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Running on: {device.upper()}")
 
