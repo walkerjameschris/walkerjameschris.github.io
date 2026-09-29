@@ -10,12 +10,14 @@ a lookup table to determine the syllables in a word, building a
 model allows us to check syllable counts for haiku poems to
 leverage proper nouns and new words not available in a lookup.
 
-## tldr: Try the Model!
+## TL;DR: Try the Model!
 
 Here is the model running client side in your web browser using
-pure HTML/JS and the ONNX standard!
+pure HTML/JS and the ONNX standard! This is a 500k+ parameter
+deep learning model with an `nn.Embedding` layer, an `nn.LSTM`,
+and text parsing in *your browser*:
 
-<iframe src="../assets/haiku-counter.html" width="100%" height="200px" frameborder="0"></iframe>
+<iframe src="../assets/haiku-counter.html" width="100%" height="125" frameborder="0" scrolling="no"></iframe>
 
 ## Data
 
@@ -55,14 +57,21 @@ encodings) and outputs (syllable counts).
 
 ## Model Architecture and Training
 
-Our model is two major components:
-1. An embedding component (to convert encodings to latent vectors)
-2. Long-Short-Term-Memory or LSTM (to learn the relationships
-   *across* the letters of a word, both backwards and forwards.
+Our model relies on two main components:
+1. An Embedding Layer: Computes dense vector representations for
+   raw character indices. Think of this like giving the model a rich
+   map of letter identities rather than forcing it to reason over plain
+   integers.
+2. A Bidirectional LSTM (Long Short-Term Memory): Learns sequential
+   patterns across the letters of a word by reading them both forward and
+   backward simultaneously. This dual-direction context is crucial for
+   capturing English spelling quirks (like trailing silent "e"s or
+   vowel clusters) before passing the final state to a linear layer
+   to predict syllable count!
 
-We define this model using `torch.nn.Module` and construct define
-`embedding` and `lstm` members. We also define the `forward` pass
-as is standard practice:
+We define this model using `torch.nn.Module` and define `embedding`
+and `lstm` members. We also define the `forward` pass as is standard
+practice:
 
 ```py
 class SyllableClassifier(torch.nn.Module):
@@ -157,8 +166,7 @@ as it is pronounced *Cri-dget*!
 
 Here is the complete end to end code. Note that it was run within
 a `uv` environment with a GPU. However, even on CPU, this model
-is small enough to converge in a few minutes (maybe 5-15). However,
-8-10gb of VRAM is essential! It only requires `uv add nltk torch`:
+is small enough to converge in a few minutes (maybe 5-15):
 
 ```py
 #### Setup ####
@@ -205,7 +213,7 @@ for word, data in dictionary.items():
     # end with a number indicating 2x syllables!
     n = len([i for i in data[0] if i[-1].isdigit()])
 
-    # Words must have a resonable amount of syllables
+    # Words must have a reasonable amount of syllables
     if n >= 1 and n <= MAX_SYLLABLES:
         words.append(word)
         syllables.append(n)
