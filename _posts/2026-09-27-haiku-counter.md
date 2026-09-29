@@ -19,6 +19,10 @@ and text parsing in *your browser*:
 
 <iframe src="../assets/haiku-counter.html" width="100%" height="125" frameborder="0" scrolling="no"></iframe>
 
+*Note: absolutely **no** data is retained in the textbox above*
+*as the entire model and website are client side. View the source*
+*[here](https://github.com/walkerjameschris/walkerjameschris.github.io).*
+
 ## Data
 
 To build my model, I am using `nltk` and the `cmudict` dataset.
