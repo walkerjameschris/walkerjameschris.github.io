@@ -15,7 +15,9 @@ leverage proper nouns and new words not available in a lookup.
 Here is the model running client side in your web browser using
 pure HTML/JS and the ONNX standard! This is a 500k+ parameter
 deep learning model with an `nn.Embedding` layer, an `nn.LSTM`,
-and text parsing in *your browser*:
+and text parsing in *your browser*. **Currently, this only**
+**supports one word at a time in browser, I may expand in**
+**the future to multiple words (or a complete haiku) in JS:**
 
 <iframe src="../assets/haiku-counter.html" width="100%" height="200" frameborder="0" scrolling="no"></iframe>
 
