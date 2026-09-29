@@ -13,12 +13,19 @@
       font-size: 16px; line-height: 1.5; resize: none; outline: none;
     }
     textarea:focus { border-color: #81a1c1; }
+    button {
+      margin-top: 10px; padding: 8px 16px; background: #81a1c1; color: #252a34;
+      border: none; border-radius: 4px; font-family: monospace; font-weight: bold;
+      cursor: pointer; font-size: 14px;
+    }
+    button:hover { background: #88c0d0; }
     .counts { margin-top: 8px; font-size: 14px; color: #81a1c1; }
   </style>
 </head>
 <body>
   <div class="widget">
     <textarea id="input" rows="3" placeholder="Type your haiku..." maxlength="302"></textarea>
+    <button id="goBtn">Go</button>
     <div class="counts" id="counts">Line 1: 0 | Line 2: 0 | Line 3: 0</div>
   </div>
 
@@ -50,8 +57,9 @@
 
     const inputEl = document.getElementById('input');
     const countsEl = document.getElementById('counts');
+    const goBtn = document.getElementById('goBtn');
 
-    inputEl.addEventListener('input', async () => {
+    goBtn.addEventListener('click', async () => {
       const lines = inputEl.value.split('\n').slice(0, 3);
       if (inputEl.value.split('\n').length > 3) inputEl.value = lines.join('\n');
 
