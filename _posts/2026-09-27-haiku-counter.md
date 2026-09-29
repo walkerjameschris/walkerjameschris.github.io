@@ -17,7 +17,7 @@ pure HTML/JS and the ONNX standard! This is a 500k+ parameter
 deep learning model with an `nn.Embedding` layer, an `nn.LSTM`,
 and text parsing in *your browser*:
 
-<iframe src="../assets/haiku-counter.html" width="100%" height="175" frameborder="0" scrolling="no"></iframe>
+<iframe src="../assets/haiku-counter.html" width="100%" height="200" frameborder="0" scrolling="no"></iframe>
 
 *Note: absolutely **no** data is retained in the textbox above*
 *as the entire model and website are client side. View the source*
