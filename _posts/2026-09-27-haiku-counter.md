@@ -16,7 +16,7 @@ Here is the model running client side in your web browser using
 pure HTML/JS and the ONNX standard! This is a 500k+ parameter
 deep learning model with an `nn.Embedding` layer, an `nn.LSTM`,
 and text parsing in *your browser*. It even works with made-up
-words (e.g., Splorfinating, Flumfloxed, Cridget):
+words (e.g., splorfinating or flumfloxed):
 
 <iframe src="../assets/haiku-counter.html" width="100%" height="200" frameborder="0" scrolling="no"></iframe>
 
