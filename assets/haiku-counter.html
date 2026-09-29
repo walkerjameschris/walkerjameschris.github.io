@@ -37,20 +37,30 @@
 
     function encodeWord(word) {
       const clean = word.toLowerCase().replace(/[^a-z]/g, '').slice(0, 15);
-      const arr = new BigInt64Array(15);
-      for (let i = 0; i < clean.length; i++) arr[i] = BigInt(charMap[clean[i]] || 0);
+      const arr = new BigInt64Array(15); // standard zero fill
+      for (let i = 0; i < clean.length; i++) {
+        arr[i] = BigInt(charMap[clean[i]] || 0);
+      }
       return arr;
     }
 
     async function predictWord(word) {
-      if (!session || !word.replace(/[^a-z]/gi, '')) return 0;
+      const clean = word.toLowerCase().replace(/[^a-z]/g, '');
+      if (!session || !clean) return 0;
+
       const tensor = new ort.Tensor('int64', encodeWord(word), [1, 15]);
       const results = await session.run({ input_words: tensor });
-      const logits = results.syllable_logits.data;
+      
+      // Access output tensor reliably regardless of ONNX output naming
+      const outputTensor = results.syllable_logits || Object.values(results)[0];
+      const logits = outputTensor.data;
 
       let maxIdx = 0, maxVal = -Infinity;
       for (let i = 0; i < logits.length; i++) {
-        if (logits[i] > maxVal) { maxVal = logits[i]; maxIdx = i; }
+        if (logits[i] > maxVal) { 
+          maxVal = logits[i]; 
+          maxIdx = i; 
+        }
       }
       return maxIdx;
     }
@@ -61,10 +71,11 @@
 
     goBtn.addEventListener('click', async () => {
       const lines = inputEl.value.split('\n').slice(0, 3);
-      if (inputEl.value.split('\n').length > 3) inputEl.value = lines.join('\n');
 
       const counts = await Promise.all(lines.map(async line => {
         const words = line.trim().split(/\s+/).filter(Boolean);
+        if (words.length === 0) return 0;
+        
         const wordCounts = await Promise.all(words.map(predictWord));
         return wordCounts.reduce((a, b) => a + b, 0);
       }));
