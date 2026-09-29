@@ -62,7 +62,8 @@ so on. Then, for any unused characters we give them a `0`.
 ```
 
 We repeat this for all words and then we have the inputs (word
-encodings) and outputs (syllable counts).
+encodings) and outputs (syllable counts). I divided the data into
+train and test using `train_test_split` from `sklearn`.
 
 ## Model Architecture and Training
 
@@ -77,6 +78,14 @@ Our model relies on two main components:
    capturing English spelling quirks (like trailing silent "e"s or
    vowel clusters) before passing the final state to a linear layer
    to predict syllable count!
+
+I decided to use an LSTM for the core of this model (as opposed to a
+a simple feedforward neural network) given the ubiquity for LSTMs in
+[small NLP projects](https://ieeexplore.ieee.org/document/11485794).
+Moreover, because I am going to serve this model client-side the final
+binary needs to be compact so a large transformer architecture is
+likey overkill for this use case. I would try more architectures in
+an enterprise model development setting.
 
 We define this model using `torch.nn.Module` and define `embedding`
 and `lstm` members. We also define the `forward` pass as is standard
@@ -140,6 +149,15 @@ for epoch in range(EPOCHS):
 
 ## Evaluation
 
+First, I wanted to see how often the model was correct on train
+and test. Turns out, its pretty good! The model correctly guessed
+the number of syllables over 95% of the time for both train and test:
+
+| Population | % Correct |
+| - | - |
+| Train | 99.78% |
+| Test | 95.54% |
+
 From here, we can try out our model! I defined a helper function
 which allows a user to pass a complete haiku and obtain results.
 Consider these three haiku poems:
@@ -171,6 +189,20 @@ weird: [6, 6, 8]
 It even works for *new* made up words like *Cridget* returns 2
 as it is pronounced *Cri-dget*!
 
+## Limitations
+
+- I would want to set up more advanced random seed setting for
+  both data and model training for reproducibility
+- I could do more advanced sampling and performance analysis
+  (e.g., where does the model slip up and for what type of words?)
+- This is all one script; an enterprise model setting would likely
+  require a multi file construct
+- I could add type hints and unit tests for all functions; additionally
+  the helper functions are not *pure* meaning they require global
+  state which I would also likely change
+- I select the *last* timestep from the LSTM whereas I might be
+  able to grab the last non-null character
+
 ## Code
 
 Here is the complete end to end code. Note that it was run within
@@ -183,6 +215,7 @@ is small enough to converge in a few minutes (maybe 5-15):
 import nltk
 import torch
 from nltk.corpus import cmudict
+from sklearn.model_selection import train_test_split
 
 EPOCHS = 50
 BATCH_SIZE = 256
@@ -196,7 +229,7 @@ print(f"Running on: {device.upper()}")
 
 #### Extract Words ####
 
-nltk.download("cmudict", quiet=True)
+nltk.download("cmudict")
 dictionary = cmudict.dict()
 
 words = []
@@ -241,6 +274,10 @@ char_to_idx[""] = 0 # This is the NULL padding index
 
 #### Helper Functions #####
 
+# This function would error for unsanitized string inputs
+# containing punctuation or capital letters. However, for
+# this toy example, it will be deployed client-side in
+# JavaScript within a textbox with input validation.
 def encode(words):
     if not isinstance(words, list):
         words = [words]
@@ -254,6 +291,10 @@ def encode(words):
 
 X = torch.LongTensor(encode(words)).to(device)
 y = torch.LongTensor(syllables).to(device)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, random_state=42
+)
 
 #### Model Architecture ####
 
@@ -295,8 +336,8 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 for epoch in range(EPOCHS):
     
     batches = zip(
-        torch.split(X, BATCH_SIZE),
-        torch.split(y, BATCH_SIZE)
+        torch.split(X_train, BATCH_SIZE),
+        torch.split(y_train, BATCH_SIZE)
     )
     
     for X_batch, y_batch in batches:
@@ -308,9 +349,21 @@ for epoch in range(EPOCHS):
         
     print(f"Epoch {epoch}/{EPOCHS} | Loss: {loss.item():.4f}")
 
-#### Test with Haikus! ####
-
 model.eval()
+
+#### Measure Train/Test Performance ####
+
+@torch.no_grad()
+def evaluate(X, y):
+    batches = torch.split(X, BATCH_SIZE)
+    logits = [model(i) for i in batches]
+    predictions = torch.vstack(logits).argmax(dim=1)
+    return torch.mean(100 * (predictions == y).float()).item()
+           
+print(f"Train: {evaluate(X_train, y_train):.2f}% correct")
+print(f"Test: {evaluate(X_test, y_test):.2f}% correct")
+
+#### Test with Haikus! ####
 
 @torch.no_grad()
 def count_haiku(poem):
