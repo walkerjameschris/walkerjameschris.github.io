@@ -36,8 +36,9 @@
     ort.InferenceSession.create('/assets/syllable-classifier.onnx').then(s => session = s);
 
     function encodeWord(word) {
+      // Exactly matches PyTorch: lowercases, strips non-a-z, caps at length 15
       const clean = word.toLowerCase().replace(/[^a-z]/g, '').slice(0, 15);
-      const arr = new BigInt64Array(15); // standard zero fill
+      const arr = new BigInt64Array(15);
       for (let i = 0; i < clean.length; i++) {
         arr[i] = BigInt(charMap[clean[i]] || 0);
       }
@@ -51,7 +52,6 @@
       const tensor = new ort.Tensor('int64', encodeWord(word), [1, 15]);
       const results = await session.run({ input_words: tensor });
       
-      // Access output tensor reliably regardless of ONNX output naming
       const outputTensor = results.syllable_logits || Object.values(results)[0];
       const logits = outputTensor.data;
 
@@ -70,9 +70,11 @@
     const goBtn = document.getElementById('goBtn');
 
     goBtn.addEventListener('click', async () => {
+      // Split into up to 3 lines
       const lines = inputEl.value.split('\n').slice(0, 3);
 
       const counts = await Promise.all(lines.map(async line => {
+        // Split each line into non-empty words
         const words = line.trim().split(/\s+/).filter(Boolean);
         if (words.length === 0) return 0;
         
@@ -80,6 +82,7 @@
         return wordCounts.reduce((a, b) => a + b, 0);
       }));
 
+      // Ensure 3 line counts exist
       while (counts.length < 3) counts.push(0);
       countsEl.textContent = `Line 1: ${counts[0]} | Line 2: ${counts[1]} | Line 3: ${counts[2]}`;
     });
