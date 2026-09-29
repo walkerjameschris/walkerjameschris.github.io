@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.1/dist/ort.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: transparent; font-family: monospace; }
+    .widget { background: #252a34; border: 1px solid #3b4252; border-radius: 6px; padding: 16px; }
+    textarea {
+      width: 100%; height: 90px; background: #1d212a; color: #e5e9f0;
+      border: 1px solid #3b4252; border-radius: 4px; padding: 10px;
+      font-size: 16px; line-height: 1.5; resize: none; outline: none;
+    }
+    textarea:focus { border-color: #81a1c1; }
+    .counts { margin-top: 8px; font-size: 14px; color: #81a1c1; }
+  </style>
+</head>
+<body>
+  <div class="widget">
+    <textarea id="input" rows="3" placeholder="Type your haiku..." maxlength="302"></textarea>
+    <div class="counts" id="counts">Line 1: 0 | Line 2: 0 | Line 3: 0</div>
+  </div>
+
+  <script>
+    let session = null;
+    const charMap = Object.fromEntries([..."abcdefghijklmnopqrstuvwxyz"].map((c, i) => [c, i + 1]));
+
+    ort.InferenceSession.create('/assets/syllable-classifier.onnx').then(s => session = s);
+
+    function encodeWord(word) {
+      const clean = word.toLowerCase().replace(/[^a-z]/g, '').slice(0, 15);
+      const arr = new BigInt64Array(15);
+      for (let i = 0; i < clean.length; i++) arr[i] = BigInt(charMap[clean[i]] || 0);
+      return arr;
+    }
+
+    async function predictWord(word) {
+      if (!session || !word.replace(/[^a-z]/gi, '')) return 0;
+      const tensor = new ort.Tensor('int64', encodeWord(word), [1, 15]);
+      const results = await session.run({ input_words: tensor });
+      const logits = results.syllable_logits.data;
+
+      let maxIdx = 0, maxVal = -Infinity;
+      for (let i = 0; i < logits.length; i++) {
+        if (logits[i] > maxVal) { maxVal = logits[i]; maxIdx = i; }
+      }
+      return maxIdx;
+    }
+
+    const inputEl = document.getElementById('input');
+    const countsEl = document.getElementById('counts');
+
+    inputEl.addEventListener('input', async () => {
+      const lines = inputEl.value.split('\n').slice(0, 3);
+      if (inputEl.value.split('\n').length > 3) inputEl.value = lines.join('\n');
+
+      const counts = await Promise.all(lines.map(async line => {
+        const words = line.trim().split(/\s+/).filter(Boolean);
+        const wordCounts = await Promise.all(words.map(predictWord));
+        return wordCounts.reduce((a, b) => a + b, 0);
+      }));
+
+      while (counts.length < 3) counts.push(0);
+      countsEl.textContent = `Line 1: ${counts[0]} | Line 2: ${counts[1]} | Line 3: ${counts[2]}`;
+    });
+  </script>
+</body>
+</html>
