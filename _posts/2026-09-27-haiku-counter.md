@@ -10,6 +10,13 @@ a lookup table to determine the syllables in a word, building a
 model allows us to check syllable counts for haiku poems to
 leverage proper nouns and new words not available in a lookup.
 
+## tldr: Try the Model!
+
+Here is the model running client side in your web browser using
+pure HTML/JS and the ONNX standard!
+
+<iframe src="assets/haiku-counter.html" width="100%" height="200px" frameborder="0"></iframe>
+
 ## Data
 
 To build my model, I am using `nltk` and the `cmudict` dataset.
@@ -211,7 +218,7 @@ assert max(len(i) for i in words) <= MAX_WORD_LENGTH
 
 #### Build Dataset ####
 
-letters = sorted(set("".join(words)))
+letters = "abcdefghijklmnopqrstuvwxyz"
 char_to_idx = {v: i + 1 for i, v in enumerate(letters)}
 char_to_idx[""] = 0 # This is the NULL padding index
 
@@ -320,4 +327,20 @@ poems = {
 
 for poem, contents in poems.items():
     print(f"{poem}: {count_haiku(contents)}")
+
+#### Export Model ####
+
+ex_input = torch.zeros((1, MAX_WORD_LENGTH), dtype=torch.long, device=device)
+
+torch.onnx.export(
+    model,
+    ex_input,
+    "syllable-classifier.onnx",
+    export_params=True,
+    opset_version=18,
+    do_constant_folding=True,
+    input_names=["input_words"],
+    output_names=["syllable_logits"],
+    dynamo=False
+)
 ```
