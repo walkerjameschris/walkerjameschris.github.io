@@ -7,36 +7,38 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: transparent; font-family: monospace; }
     .widget { background: #252a34; border: 1px solid #3b4252; border-radius: 6px; padding: 16px; }
-    textarea {
-      width: 100%; height: 90px; background: #1d212a; color: #e5e9f0;
+    label { display: block; color: #81a1c1; margin-bottom: 6px; font-size: 13px; }
+    input[type="text"] {
+      width: 100%; background: #1d212a; color: #e5e9f0;
       border: 1px solid #3b4252; border-radius: 4px; padding: 10px;
-      font-size: 16px; line-height: 1.5; resize: none; outline: none;
+      font-size: 16px; outline: none; font-family: monospace;
     }
-    textarea:focus { border-color: #81a1c1; }
+    input[type="text"]:focus { border-color: #81a1c1; }
     button {
       margin-top: 10px; padding: 8px 16px; background: #81a1c1; color: #252a34;
       border: none; border-radius: 4px; font-family: monospace; font-weight: bold;
       cursor: pointer; font-size: 14px;
     }
     button:hover { background: #88c0d0; }
-    .counts { margin-top: 8px; font-size: 14px; color: #81a1c1; }
+    .counts { margin-top: 12px; font-size: 15px; color: #81a1c1; font-weight: bold; }
   </style>
 </head>
 <body>
   <div class="widget">
-    <textarea id="input" rows="3" placeholder="Type your haiku..." maxlength="302"></textarea>
+    <label for="input">Enter a Single Word (No Spaces):</label>
+    <input type="text" id="input" placeholder="e.g. apple" maxlength="15" autocomplete="off" />
     <button id="goBtn">Go</button>
-    <div class="counts" id="counts">Line 1: 0 | Line 2: 0 | Line 3: 0</div>
+    <div class="counts" id="counts">Syllables: 0</div>
   </div>
 
   <script>
     let session = null;
     const charMap = Object.fromEntries([..."abcdefghijklmnopqrstuvwxyz"].map((c, i) => [c, i + 1]));
 
+    // Load ONNX session
     ort.InferenceSession.create('/assets/syllable-classifier.onnx').then(s => session = s);
 
     function encodeWord(word) {
-      // Exactly matches PyTorch: lowercases, strips non-a-z, caps at length 15
       const clean = word.toLowerCase().replace(/[^a-z]/g, '').slice(0, 15);
       const arr = new BigInt64Array(15);
       for (let i = 0; i < clean.length; i++) {
@@ -69,22 +71,16 @@
     const countsEl = document.getElementById('counts');
     const goBtn = document.getElementById('goBtn');
 
+    // Automatically strip spaces or non-alphabetical characters in real-time
+    inputEl.addEventListener('input', () => {
+      inputEl.value = inputEl.value.replace(/[^a-zA-Z]/g, '');
+    });
+
+    // Run prediction on button click
     goBtn.addEventListener('click', async () => {
-      // Split into up to 3 lines
-      const lines = inputEl.value.split('\n').slice(0, 3);
-
-      const counts = await Promise.all(lines.map(async line => {
-        // Split each line into non-empty words
-        const words = line.trim().split(/\s+/).filter(Boolean);
-        if (words.length === 0) return 0;
-        
-        const wordCounts = await Promise.all(words.map(predictWord));
-        return wordCounts.reduce((a, b) => a + b, 0);
-      }));
-
-      // Ensure 3 line counts exist
-      while (counts.length < 3) counts.push(0);
-      countsEl.textContent = `Line 1: ${counts[0]} | Line 2: ${counts[1]} | Line 3: ${counts[2]}`;
+      const word = inputEl.value.trim();
+      const count = await predictWord(word);
+      countsEl.textContent = `Syllables: ${count}`;
     });
   </script>
 </body>
