@@ -15,7 +15,7 @@ leverage proper nouns and new words not available in a lookup.
 Here is the model running client side in your web browser using
 pure HTML/JS and the ONNX standard!
 
-<iframe src="assets/haiku-counter.html" width="100%" height="200px" frameborder="0"></iframe>
+<iframe src="../assets/haiku-counter.html" width="100%" height="200px" frameborder="0"></iframe>
 
 ## Data
 
