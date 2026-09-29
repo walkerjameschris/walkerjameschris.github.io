@@ -1,5 +1,5 @@
 ---
-title: "Using Deep Learning to Count Syllables for Haikus"
+title: "Using Deep Learning to Count Syllables"
 date: "2026-09-27"
 ---
 
@@ -18,7 +18,7 @@ deep learning model with an `nn.Embedding` layer, an `nn.LSTM`,
 and text parsing in *your browser*. It even works with made-up
 words (e.g., splorfinating or flumfloxed):
 
-<iframe src="../assets/haiku-counter.html" width="100%" height="200" frameborder="0" scrolling="no"></iframe>
+<iframe src="../assets/syllable-counter.html" width="100%" height="200" frameborder="0" scrolling="no"></iframe>
 
 Please note:
 - Currently, this only supports one word at a time in browser, I may
