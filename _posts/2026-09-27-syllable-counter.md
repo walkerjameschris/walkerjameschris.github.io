@@ -272,7 +272,7 @@ letters = "abcdefghijklmnopqrstuvwxyz"
 char_to_idx = {v: i + 1 for i, v in enumerate(letters)}
 char_to_idx[""] = 0 # This is the NULL padding index
 
-#### Helper Functions #####
+#### Create Training Tensors #####
 
 # This function would error for unsanitized string inputs
 # containing punctuation or capital letters. However, for
@@ -289,8 +289,8 @@ def encode(words):
         encodings.append(encoding)
     return encodings
 
-X = torch.LongTensor(encode(words)).to(device)
-y = torch.LongTensor(syllables).to(device)
+X = torch.tensor(encode(words), dtype=torch.long).to(device)
+y = torch.tensor(syllables, dtype=torch.long).to(device)
 
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, random_state=42
